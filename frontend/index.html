@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <title>ROAST BIRD 🐦</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <section
+            id="language-screen"
+            class="screen"
+            aria-label="Choose roast language"
+        >
+            <canvas id="particle-canvas"></canvas>
+            <div class="language-panel">
+                <h1 class="title">ROAST BIRD 🐦</h1>
+                <p class="subtitle">Choose your roast language</p>
+                <div class="language-grid" id="language-grid"></div>
+            </div>
+        </section>
+
+        <main
+            id="game-screen"
+            class="screen hidden"
+            aria-label="ROAST BIRD game"
+        >
+            <div class="game-shell">
+                <canvas id="game-canvas" width="480" height="640"></canvas>
+                <div id="hud">
+                    <button
+                        id="mute-button"
+                        class="icon-button"
+                        aria-label="Mute commentary and music"
+                    >
+                        🔊
+                    </button>
+                    <div id="score" aria-live="polite">0</div>
+                    <div id="language-badge">🇬🇧</div>
+                    <button
+                        id="change-language-button"
+                        class="small-button"
+                        aria-label="Change language"
+                    >
+                        🌍
+                    </button>
+                    <div id="start-hint">
+                        Tap / Click / Space to flap<br /><span
+                            style="color: #00ffcc"
+                            >Don't embarrass yourself.</span
+                        >
+                    </div>
+                    <div id="death-overlay" class="hidden">
+                        <div class="death-card">
+                            <h2 class="death-title">GAME OVER</h2>
+                            <p id="roast-subtitle">
+                                That was genuinely embarrassing.
+                            </p>
+                            <div class="stats">
+                                <div class="stat">
+                                    <span>Score</span
+                                    ><strong id="final-score">0</strong>
+                                </div>
+                                <div class="stat">
+                                    <span>High</span
+                                    ><strong id="high-score">0</strong>
+                                </div>
+                            </div>
+                            <div class="death-actions">
+                                <button
+                                    id="try-again-button"
+                                    class="primary-button"
+                                >
+                                    TRY AGAIN 🔄
+                                </button>
+                                <button
+                                    id="death-language-button"
+                                    class="secondary-button"
+                                >
+                                    CHANGE LANGUAGE 🌍
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="footer-tip">
+                Voice is generated through your secure backend proxy. No API
+                keys live in the browser.
+            </p>
+        </main>
+
+        <script src="js/config.js"></script>
+        <script src="js/scripts.js"></script>
+        <script src="js/audio.js"></script>
+        <script src="js/ui.js"></script>
+        <script src="js/game.js"></script>
+        <script>
+            const ui = new UIManager();
+            const audio = new AudioManager();
+            const game = new Game(
+                document.getElementById("game-canvas"),
+                ui,
+                audio,
+            );
+
+            ui.onLanguageSelected = (language) => {
+                game.setLanguage(language);
+                game.reset();
+                ui.showGame(language);
+                game.startLoop();
+                game.speakKey("START");
+            };
+
+            ui.onTryAgain = () => {
+                game.reset();
+                game.speakKey("START");
+            };
+
+            ui.onChangeLanguage = () => {
+                game.reset();
+                ui.showLanguageScreen();
+            };
+
+            ui.onMute = () => audio.toggleMute();
+
+            const shouldIgnoreInput = (event) =>
+                event.target instanceof HTMLElement &&
+                event.target.closest("button");
+
+            document.addEventListener(
+                "pointerdown",
+                (event) => {
+                    if (shouldIgnoreInput(event)) return;
+                    if (!ui.gameScreen.classList.contains("hidden"))
+                        game.handleInput();
+                },
+                { passive: true },
+            );
+
+            document.addEventListener("keydown", (event) => {
+                if (["Space", "ArrowUp", "KeyW"].includes(event.code)) {
+                    event.preventDefault();
+                    if (!ui.gameScreen.classList.contains("hidden"))
+                        game.handleInput();
+                }
+                if (event.code === "KeyM") ui.muteButton.click();
+            });
+
+            document.addEventListener("visibilitychange", () => {
+                if (document.hidden && game.animationId)
+                    cancelAnimationFrame(game.animationId);
+                if (
+                    !document.hidden &&
+                    !ui.gameScreen.classList.contains("hidden")
+                )
+                    game.startLoop();
+            });
+        </script>
+    </body>
+</html>
