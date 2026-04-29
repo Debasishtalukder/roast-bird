@@ -26,6 +26,10 @@ app.get("*", (_req, res) => {
   res.sendFile(path.join(frontendPath, "index.html"));
 });
 
-app.listen(PORT, () => {
-  console.log(`ROAST BIRD server running at http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`ROAST BIRD server running at http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;

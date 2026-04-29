@@ -94,18 +94,16 @@ Never paste the API key into any frontend file. The browser calls `/api/speak`, 
 
 ## Deploying to Vercel
 
-This app is an Express server that also serves static frontend files.
+This project includes `vercel.json` so Vercel knows how to serve the static frontend and route `/api/speak` to the Express backend.
 
 1. Push the project to GitHub.
 2. Import the repo in Vercel.
-3. Add an environment variable in Vercel Project Settings:
+3. Make sure the Vercel project Root Directory is the repo root (`roast-bird`).
+4. Add an environment variable in Vercel Project Settings:
    - `ELEVEN_API_KEY=your_real_elevenlabs_api_key_here`
-4. Set the build command to:
-   - `npm install`
-5. Set the start command to:
-   - `npm start`
+5. Redeploy the project.
 
-If your frontend and backend are deployed under the same domain, update `frontend/js/config.js` to use your deployed backend origin or an empty same-origin base URL. For local development it defaults to `http://localhost:3000`.
+The frontend uses `http://localhost:3000` only during local development. In production it automatically uses the deployed Vercel origin for `/api/speak`.
 
 ## Development Notes
 
