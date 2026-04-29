@@ -1,5 +1,12 @@
 # ROAST BIRD 🐦
 
+## ⚠️ Security Setup (Read First!)
+
+1. NEVER commit your .env file
+2. Copy .env.example → .env
+3. Add your ElevenLabs API key to .env
+4. .env is in .gitignore — it will never be pushed to GitHub
+
 ROAST BIRD is a neon cyberpunk Flappy Bird clone with a savage multilingual AI meme commentator. The browser game runs on HTML5 Canvas, while ElevenLabs Text-to-Speech is accessed only through a secure Node.js/Express backend proxy so your API key never reaches the frontend.
 
 ## Features

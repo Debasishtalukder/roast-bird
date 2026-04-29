@@ -5,6 +5,10 @@ const cors = require("cors");
 const express = require("express");
 const ttsRoute = require("./routes/tts");
 
+if (!process.env.ELEVEN_API_KEY) {
+  throw new Error("Missing ELEVEN_API_KEY in .env file. See .env.example");
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const frontendPath = path.join(__dirname, "..", "frontend");
